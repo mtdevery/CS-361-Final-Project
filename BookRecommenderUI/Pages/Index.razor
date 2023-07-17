@@ -1,0 +1,40 @@
+﻿@page "/"
+@using BookRecommenderUI.Data;
+@using MudBlazor
+@inject BookService bookService
+
+<PageTitle>Home</PageTitle>
+<MudText>Select Genres you would like to get recommendations for.</MudText>
+<div class="flex-row">
+    @foreach(var genre in genres)
+    {
+        <MudCheckBox T="bool" Label="@genre" />
+    }
+</div>
+<MudButton OnClick="GetBooks" Color="Color.Primary">Get Suggestions</MudButton>
+
+<MudText Style="margin-top: 1rem;">View Suggestions</MudText>
+@if (books?.Count() > 0)
+{
+    <MudCarousel ItemsSource="@books" Style="height: 50vh" ShowBullets="false" AutoCycle="false">
+        <ItemTemplate>
+            <div class="d-flex flex-column justify-content-center" style="height: 100%;">
+                <div class="mx-auto my-auto">
+                    <MudText>@context.Title</MudText>
+                    <MudText>@context.Author</MudText>
+                    <MudImage Height="200" Width=150 Src="@context.ImageUrl" />
+                </div>
+            </div>
+        </ItemTemplate>
+    </MudCarousel>
+}
+
+@code {
+    private Book[] books;
+    private List<string> genres = new List<string>() { "Fiction", "Fantasy", "Classics" };
+
+    private void GetBooks()
+    {
+        books = bookService.GetBooks();
+    }
+}
